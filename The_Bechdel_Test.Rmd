@@ -1,7 +1,7 @@
 ---
 title: "Bechdel Test"
 author: "Created by Mine Çetinkaya-Rundel"
-output: html_document
+output: github_document
 ---
 <!--- you might change html_document to github_document if you are working with GitHub--->
 
@@ -22,22 +22,23 @@ We start with loading the packages we'll use.
 
 ```{r load-packages, message=FALSE}
 library(fivethirtyeight)
-library(Tidyverse)
+library(tidyverse)
 ```
 
 The dataset contains information on `r nrow(bechdel)` movies released between `r min(bechdel$year)` and `r max(bechdel$year)`.
 However we'll focus our analysis on movies released between 1990 and 2013.
 
 ```{r}
-bechdel90_13 <- bechdel %>% 
-  filter(between(year, 1990, 2013))
+bechdel90_13 <- bechdel %>% filter(between(year, 1990, 2013))
 ```
 
 > What is the `%>%` inside the code? What does it do? How did you determine your answer?   
 
+__%>% is a Pipe Operator. It allows the variable being referenced to be passed into another function. I this case, the result of the 'filter' function is being stored into bechdel90_13 after bechdel is assigned to bechdel90_13.__
 
 
-There are `___` such movies.
+
+There are `r nrow(bechdel90_13)` such movies.
 
 The financial variables we'll focus on are the following:
 
@@ -54,12 +55,13 @@ Let's take a look at how median budget and gross vary by whether the movie passe
 ```{r message = FALSE}
 bechdel90_13 %>%
   group_by(binary) %>%
-  summarise(med_budget = median(budget_2031),
+  summarise(med_budget = median(budget_2013),
             med_domgross = median(domgross_2013, na.rm = TRUE),
             med_intgross = median(intgross_2013, na.rm = TRUE))
 ```
 
 > What does `summarise()` do? How did you look it up?  
+I looked up summarise() in the help section. What it does is it turns a group of variales into a data frame. This allows you to quickly group information that is similar to each other. 
 
 
 
@@ -75,7 +77,7 @@ This information is stored in the `clean_test` variable, which takes on the foll
 
 ```{r message = FALSE}
 bechdel90_13 %>%
-  group_by(___) %>%  #fill in the gap with the right variable
+  group_by(clean_test) %>%  #fill in the gap with the right variable
   summarise(med_budget = median(budget_2013),
             med_domgross = median(domgross_2013, na.rm = TRUE),
             med_intgross = median(intgross_2013, na.rm = TRUE))
@@ -94,11 +96,11 @@ Let's see which movies have the highest return on investment.
 ```{r}
 bechdel90_13 %>%
   arrange(desc(roi)) %>% 
-  select(title, roi, year
+  select(title, roi, year)
 ```
 
 > What does `select()` do? How did you look it up?  
-
+Select (according to the help section) is a Tidyverse function that returns a subset of a data frame.
 
 
 
@@ -107,11 +109,11 @@ Below is a visualization of the return on investment by test result, however it'
 
 ```{r warning = FALSE}
 ggplot(data = bechdel90_13, 
-       mapping = aes(x = clean_test, y = roi color = binary)) +
+       mapping = aes(x = clean_test, y = roi, color = binary)) +
   geom_boxplot() +
   labs(title = "Return on investment vs. Bechdel test result",
        x = "Detailed Bechdel result",
-       y = "___",
+       y = "Investment Return",
        color = "Binary Bechdel result")
 ```
 
@@ -123,13 +125,13 @@ bechdel90_13 %>%
   select(title, budget_2013, domgross_2013, year)
 ```
 
-Zooming in on the movies with `roi < ___` provides a better view of how the medians across the categories compare:
+Zooming in on the movies with `roi < 200` provides a better view of how the medians across the categories compare:
 
 ```{r warning = FALSE}
 ggplot(data = bechdel90_13, mapping = aes(x = clean_test, y = roi, color = binary)) +
   geom_boxplot() +
   labs(title = "Return on investment vs. Bechdel test result",
-       subtitle = "___", # Something about zooming in to a certain level
+       subtitle = "Zooming in to movies with ROI < 15", # Something about zooming in to a certain level
        x = "Detailed Bechdel result",
        y = "Return on investment",
        color = "Binary Bechdel result") +
@@ -138,6 +140,6 @@ ggplot(data = bechdel90_13, mapping = aes(x = clean_test, y = roi, color = binar
 
 
 > What did you learn from the data analysis included in the document?  
-
+The most common error here are missing functions and variables. One has to be very careful of how they make variables otherwise they will not be found. The same goes for importing libraries.
 
 
